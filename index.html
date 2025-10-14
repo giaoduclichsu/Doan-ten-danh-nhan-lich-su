@@ -531,10 +531,21 @@ btnYes.addEventListener('click', ()=> handleAnswer('yes'));
 btnNo.addEventListener('click', ()=> handleAnswer('no'));
 btnUnknown.addEventListener('click', ()=> handleAnswer('unknown'));
 restartBtn.addEventListener('click', ()=> {
+  // Ẩn kết quả cũ
+  resultEl.classList.add('hidden');
+  questionEl.textContent = 'Nhấn BẮT ĐẦU CHƠI để bắt đầu.';
+  
+  // Reset lại toàn bộ trạng thái trò chơi
+  remaining = [];
+  askedTokens = new Set();
+  step = 0;
+  currentQ = null;
+  achievementAsked = false;
+
+  // Hiển thị lại màn hình bắt đầu
   gameCard.classList.add('hidden');
   startScreen.style.display = '';
 });
-
 /* ========== Init ========== */
 questionEl.textContent = 'Nhấn BẮT ĐẦU CHƠI để bắt đầu.';
 window.startGame = startGame;
