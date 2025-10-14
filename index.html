@@ -142,7 +142,7 @@
         <div id="result" class="result hidden" aria-live="polite"></div>
 
         <div style="text-align:center;margin-top:12px">
-          <button id="restart" class="btn ghost hidden">Chơi lại</button>
+          <button id="restartBtn" onclick="restartGame()">Chơi lại</button>
         </div>
 
         <div class="footer-note">Thiết kế lấy cảm hứng từ trống đồng & cây tre — tông đỏ & vàng truyền cảm hứng lịch sử.</div>
@@ -538,6 +538,32 @@ restartBtn.addEventListener('click', ()=> {
 /* ========== Init ========== */
 questionEl.textContent = 'Nhấn BẮT ĐẦU CHƠI để bắt đầu.';
 window.startGame = startGame;
+<script>
+function restartGame() {
+  // Reset các biến trò chơi
+  currentQuestion = 0;
+  possibleCharacters = [...characters];
+  askedQuestions = new Set();
+
+  // Ẩn phần kết quả
+  const resultDiv = document.getElementById("result");
+  if (resultDiv) resultDiv.style.display = "none";
+
+  // Ẩn phần đoán nhân vật (nếu có)
+  const guessSection = document.getElementById("guessSection");
+  if (guessSection) guessSection.style.display = "none";
+
+  // Hiện lại phần câu hỏi
+  const questionSection = document.getElementById("questionSection");
+  if (questionSection) questionSection.style.display = "block";
+
+  // Ẩn nút chơi lại nếu có
+  const restartBtn = document.getElementById("restartBtn");
+  if (restartBtn) restartBtn.style.display = "none";
+
+  // Gọi lại câu hỏi đầu tiên
+  showNextQuestion();
+}
 </script>
 </body>
 </html>
