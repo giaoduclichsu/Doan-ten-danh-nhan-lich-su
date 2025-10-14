@@ -7,7 +7,7 @@
 <title>Đoán nhân vật lịch sử Việt Nam</title>
 
 <!-- Fonts (hỗ trợ tiếng Việt tốt) -->
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&display=swap&subset=vietnamese" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&family=Noto+Serif:wght@600&display=swap" rel="stylesheet">
 
 <style>
   :root{
@@ -89,7 +89,7 @@
       <div class="start-hero" id="welcome-title">
         CHÀO MỪNG BẠN ĐẾN VỚI TRÒ CHƠI GIÁO DỤC — <strong>Học lịch sử bằng cách chơi</strong>
       </div>
-      <div class="start-sub">Hệ thống suy luận theo 9 tầng dựa trên dữ liệu. Trả lời các câu hỏi để đoán nhân vật.</div>
+      <div class="start-sub">Hệ thống suy luận theo 9 tầng dựa trên dữ liệu từ Google Sheet. Trả lời các câu hỏi để hệ thống thu hẹp và đoán nhân vật.</div>
 
       <button class="start-btn" onclick="startGame()">BẮT ĐẦU CHƠI</button>
 
@@ -538,32 +538,6 @@ restartBtn.addEventListener('click', ()=> {
 /* ========== Init ========== */
 questionEl.textContent = 'Nhấn BẮT ĐẦU CHƠI để bắt đầu.';
 window.startGame = startGame;
-<script>
-function restartGame() {
-  // Reset các biến trò chơi
-  currentQuestion = 0;
-  possibleCharacters = [...characters];
-  askedQuestions = new Set();
-
-  // Ẩn phần kết quả
-  const resultDiv = document.getElementById("result");
-  if (resultDiv) resultDiv.style.display = "none";
-
-  // Ẩn phần đoán nhân vật (nếu có)
-  const guessSection = document.getElementById("guessSection");
-  if (guessSection) guessSection.style.display = "none";
-
-  // Hiện lại phần câu hỏi
-  const questionSection = document.getElementById("questionSection");
-  if (questionSection) questionSection.style.display = "block";
-
-  // Ẩn nút chơi lại nếu có
-  const restartBtn = document.getElementById("restartBtn");
-  if (restartBtn) restartBtn.style.display = "none";
-
-  // Gọi lại câu hỏi đầu tiên
-  showNextQuestion();
-}
 </script>
 </body>
 </html>
