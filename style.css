@@ -17,7 +17,7 @@ html, body {
   color: #222;
   background:
     linear-gradient(180deg, rgba(255,247,240,0.92), rgba(255,253,248,0.95)),
-    url('https://giaoduclichsu.github.io/Doan-ten-danh-nhan-lich-su/bg-vietnam.jpg') center/cover no-repeat; /* ← ảnh nền của bạn */
+    url('./bg-vietnam.jpg') center/cover no-repeat;
   background-attachment: fixed;
   overflow-x: hidden;
 }
