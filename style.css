@@ -1,121 +1,199 @@
-/* ====== PHONG CÁCH CHỦ ĐẠO ====== */
-:root {
-  --red: #b71c1c;     /* Màu đỏ chủ đạo */
-  --gold: #ffd54f;    /* Màu vàng nhấn */
-  --bg: #fff8f0;      /* Nền sáng dịu */
-  --panel: #ffffff;
-  --muted: #5a5a5a;
-  --shadow: 0 8px 24px rgba(0,0,0,0.15);
-}
+/* =========================================
+   GIAO DIỆN CHÍNH - DOÁN TÊN NHÂN VẬT LỊCH SỬ VIỆT NAM
+   Màu chủ đạo: đỏ - vàng | Font: Arial | Nền: bg-vietnam.jpg
+   ========================================= */
 
-/* ====== TOÀN TRANG ====== */
-html, body {
-  height: 100%;
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
-  color: #222;
-  background: 
-    linear-gradient(180deg, rgba(255,247,240,0.92), rgba(255,253,248,0.95)),
-    url('bg-vietnam.jpg') center/cover no-repeat;
-  background-attachment: fixed;
-  overflow-x: hidden;
 }
 
-/* ====== KHUNG TRUNG TÂM ====== */
-.wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+/* ----- Toàn trang ----- */
+body {
   min-height: 100vh;
-  text-align: center;
-  padding: 20px;
+  background: linear-gradient(180deg, rgba(255,247,240,0.94), rgba(255,253,248,0.96)),
+              url('bg-vietnam.jpg') center/cover no-repeat fixed;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 10px;
 }
 
-/* ====== TIÊU ĐỀ ====== */
-h1, h2, h3 {
-  font-family: Arial, sans-serif;
-  color: var(--red);
-  text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
-}
-
-/* ====== PANEL (khung nội dung câu hỏi, kết quả) ====== */
-.panel {
-  background: var(--panel);
+/* ----- Khối nội dung chính ----- */
+.container {
+  background: rgba(255, 255, 255, 0.95);
   border-radius: 16px;
-  padding: 24px;
-  box-shadow: var(--shadow);
-  max-width: 700px;
-  margin: 20px auto;
-  animation: fadeIn 0.8s ease;
+  padding: 24px 32px;
+  max-width: 720px;
+  width: 100%;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border: 3px solid #d32f2f;
 }
 
-/* Hiệu ứng hiện mượt mà */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+/* ----- Tiêu đề và mô tả ----- */
+h1 {
+  text-align: center;
+  color: #b71c1c;
+  margin-bottom: 18px;
+  font-size: 1.8em;
+  text-transform: uppercase;
 }
 
-/* ====== NÚT ====== */
+p {
+  text-align: center;
+  line-height: 1.6;
+  color: #444;
+  margin-bottom: 18px;
+}
+
+/* ----- Nút bấm ----- */
 button {
-  background: var(--red);
-  color: #fff;
-  border: none;
+  display: inline-block;
+  background: #ffeb3b;
+  color: #b71c1c;
+  border: 2px solid #b71c1c;
+  padding: 12px 24px;
+  font-size: 1em;
+  font-weight: bold;
   border-radius: 10px;
-  padding: 12px 28px;
-  font-size: 1.1em;
-  margin: 10px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(183, 28, 28, 0.4);
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
 }
 
 button:hover {
-  background: #d32f2f;
+  background: #fdd835;
+  color: #8b0000;
   transform: scale(1.05);
-  box-shadow: 0 6px 16px rgba(183, 28, 28, 0.5);
 }
 
-/* ====== NÚT BẮT ĐẦU ====== */
+/* ----- Nút trong phần Start Screen ----- */
 #start-button {
-  background-color: var(--gold);
-  color: var(--red);
-  font-weight: bold;
-  letter-spacing: 1px;
-  border-radius: 8px;
-  border: 2px solid var(--red);
-  font-size: 20px;
-  padding: 14px 32px;
-  cursor: pointer;
-  transition: transform 0.2s ease, background-color 0.3s ease;
+  background: #ffca28;
+  color: #7b0000;
+  font-size: 1.1em;
+  border: none;
+  box-shadow: 0 4px 10px rgba(183,28,28,0.3);
 }
 
 #start-button:hover {
-  background-color: #ffe57f;
-  transform: scale(1.07);
+  background: #ffd54f;
+  transform: scale(1.08);
 }
 
-/* ====== ẢNH NHÂN VẬT ====== */
-.character-image {
-  max-width: 280px;
-  height: auto;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+/* ----- Khối panel (các phần nội dung, câu hỏi, kết quả...) ----- */
+.panel {
+  background: linear-gradient(180deg, rgba(255,255,255,0.97), rgba(255,250,250,0.9));
+  border-left: 6px solid #fbc02d;
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+}
+
+/* ----- Start Screen (màn hình mở đầu) ----- */
+.start-screen {
+  text-align: center;
+  padding: 40px 20px;
+  background: linear-gradient(180deg, rgba(183,28,28,0.88), rgba(255,107,107,0.82));
+  border-radius: 16px;
+  color: white;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.start-screen h1 {
+  color: #fff;
+}
+
+.start-screen p {
+  color: #ffe082;
+}
+
+/* ----- Ảnh nhân vật hiển thị sau khi đoán ----- */
+.image-wrap {
+  width: 100%;
+  max-width: 480px;
   margin: 20px auto;
-  display: block;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  background: #fff;
+  border: 3px solid #fbc02d;
 }
 
-@media (max-width: 600px) {
-  .character-image {
-    max-width: 180px;
+.image-wrap img,
+.character-image,
+.avatar {
+  display: block;
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* ----- Responsive ảnh nhân vật trên di động ----- */
+@media (max-width: 900px) {
+  .image-wrap img,
+  .character-image,
+  .avatar {
+    height: 300px;
   }
 }
 
-/* ====== PHẦN CHÂN TRANG ====== */
-footer {
+@media (max-width: 600px) {
+  body {
+    padding: 20px 8px;
+  }
+
+  .container {
+    padding: 16px 20px;
+  }
+
+  h1 {
+    font-size: 1.4em;
+  }
+
+  .image-wrap img,
+  .character-image,
+  .avatar {
+    height: 220px;
+  }
+
+  button {
+    padding: 10px 18px;
+    font-size: 0.95em;
+  }
+
+  .panel {
+    padding: 14px;
+    margin-top: 14px;
+  }
+}
+
+/* ----- Chữ in đậm và tiêu đề phụ ----- */
+strong {
+  color: #c62828;
+}
+
+h2, h3 {
+  color: #b71c1c;
+  margin-bottom: 10px;
+}
+
+/* ----- Hiệu ứng nhỏ ----- */
+.fade-in {
+  animation: fadeIn 0.8s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(8px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
+/* ----- Đảm bảo nút bấm cân giữa ----- */
+.button-group {
   text-align: center;
-  font-size: 0.85em;
-  color: var(--muted);
-  padding: 20px;
+  margin-top: 20px;
 }
