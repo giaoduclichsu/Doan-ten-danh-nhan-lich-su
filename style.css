@@ -1,23 +1,28 @@
-
-/* ====== PHONG CÁCH CHỦ ĐẠO ====== */
+/* ====== CẤU HÌNH CHUNG ====== */
 :root {
   --red: #b71c1c;     /* Màu đỏ chủ đạo */
   --gold: #ffd54f;    /* Màu vàng nhấn */
-  --bg: #fff8f0;      /* Nền sáng dịu */
-  --panel: #ffffff;
-  --muted: #5a5a5a;
-  --shadow: 0 8px 24px rgba(0,0,0,0.15);
+  --bg: #fff8f0;      /* Nền sáng */
+  --panel: #ffffff;   /* Nền khung trắng */
+  --muted: #5a5a5a;   /* Màu chữ phụ */
+  --shadow: 0 6px 18px rgba(0,0,0,0.15);
 }
 
 /* ====== TOÀN TRANG ====== */
 html, body {
   height: 100%;
-  background: url('bg-vietnam.jpg') no-repeat;
-  background-size: cover;
-  background-position: center;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  color: #222;
+  background:
+    linear-gradient(180deg, rgba(255,247,240,0.92), rgba(255,253,248,0.95)),
+    url('bg-vietnam.jpg') center/cover no-repeat; /* ← ảnh nền của bạn */
+  background-attachment: fixed;
+  overflow-x: hidden;
 }
 
-/* ====== KHUNG TRUNG TÂM ====== */
+/* ====== BỐ CỤC CHÍNH ====== */
 .wrap {
   display: flex;
   flex-direction: column;
@@ -30,7 +35,7 @@ html, body {
 
 /* ====== TIÊU ĐỀ ====== */
 h1, h2, h3 {
-  font-family: "Noto Serif", serif;
+  font-family: Arial, sans-serif;
   color: var(--red);
   text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
 }
@@ -40,51 +45,25 @@ button {
   background: var(--red);
   color: #fff;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 12px 28px;
   font-size: 1.1em;
+  font-weight: bold;
   margin: 10px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(183, 28, 28, 0.4);
-  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(183, 28, 28, 0.4);
+  transition: all 0.25s ease;
 }
 button:hover {
   background: #d32f2f;
   transform: scale(1.05);
-  box-shadow: 0 6px 16px rgba(183, 28, 28, 0.5);
+  box-shadow: 0 6px 14px rgba(183, 28, 28, 0.5);
 }
 
-/* ====== ẢNH TRANG TRÍ ====== */
-.decor-left {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 180px;
-  opacity: 0.9;
-  pointer-events: none;
-  animation: sway 6s ease-in-out infinite;
-}
-
-.decor-right {
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  width: 200px;
-  opacity: 0.9;
-  pointer-events: none;
-  animation: sway 6s ease-in-out infinite reverse;
-}
-
-/* Hiệu ứng tre lay nhẹ */
-@keyframes sway {
-  0%, 100% { transform: rotate(0deg) translateY(0); }
-  50% { transform: rotate(1.5deg) translateY(-2px); }
-}
-
-/* ====== KHUNG CÂU HỎI / KẾT QUẢ ====== */
+/* ====== KHUNG HIỂN THỊ CÂU HỎI / KẾT QUẢ ====== */
 .panel {
   background: var(--panel);
-  border-radius: 16px;
+  border-radius: 12px;
   padding: 24px;
   box-shadow: var(--shadow);
   max-width: 700px;
@@ -92,7 +71,7 @@ button:hover {
   animation: fadeIn 0.8s ease;
 }
 
-/* Hiệu ứng mờ dần */
+/* ====== HIỆU ỨNG ====== */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -105,28 +84,26 @@ footer {
   color: var(--muted);
   padding: 20px;
 }
-/* Ép toàn bộ màn hình bắt đầu dùng Arial */
-.start-screen, 
-.start-screen * {
-  font-family: Arial !important;
+
+/* ====== TRANG BẮT ĐẦU ====== */
+.start-screen {
+  text-align: center;
+  padding: 40px;
 }
 
-/* (tùy chọn) tinh chỉnh lại nút bắt đầu chơi cho đẹp hơn */
 #start-button {
-  font-family: Arial !important;
-  font-weight: bold;
-  letter-spacing: 1px;
-  background-color: var(--red);
-  color: white;
+  background-color: var(--gold);
+  color: var(--red);
   border: none;
-  padding: 12px 28px;
   border-radius: 8px;
+  padding: 14px 36px;
   font-size: 18px;
+  font-weight: bold;
   cursor: pointer;
-  transition: transform 0.2s ease, background-color 0.3s ease;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
-
 #start-button:hover {
-  background-color: #d32f2f;
+  background-color: #ffe082;
   transform: scale(1.05);
 }
