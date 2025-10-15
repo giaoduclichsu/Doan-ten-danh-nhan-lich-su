@@ -91,7 +91,7 @@
       <div class="start-hero" id="welcome-title">
         CHÀO MỪNG BẠN ĐẾN VỚI TRÒ CHƠI GIÁO DỤC — <strong>Học lịch sử bằng cách chơi</strong>
       </div>
-      <div class="start-sub">Hệ thống suy luận theo 9 tầng dựa trên dữ liệu từ Google Sheet. Trả lời các câu hỏi để hệ thống thu hẹp và đoán nhân vật.</div>
+      <div class="start-sub">Hệ thống suy luận dựa trên dữ liệu từ Lịch sử Việt Nam. Trả lời các câu hỏi để hệ thống thu hẹp và đoán nhân vật bạn đang nghĩ đến.</div>
 
       <button class="start-btn" onclick="startGame()">BẮT ĐẦU CHƠI</button>
 
@@ -147,7 +147,7 @@
           <button id="restart" class="btn ghost hidden">Chơi lại</button>
         </div>
 
-        <div class="footer-note">Thiết kế lấy cảm hứng từ trống đồng & cây tre — tông đỏ & vàng truyền cảm hứng lịch sử.</div>
+        <div class="footer-note">This website is developed independently and inspired by the question-and-answer style of gameplay similar to Akinator. However, it is not an official product of Akinator or the company Elokence.</div>
       </div>
     </div>
   </div>
@@ -205,12 +205,12 @@ let achievementAsked = false;
 /* ========== Load data ========== */
 async function loadData(){
   try{
-    questionEl.textContent = 'Đang tải dữ liệu từ Google Sheet...';
+    questionEl.textContent = 'Đang tải dữ liệu...';
     const res = await fetch(OPENSHEET, {cache:'no-store'});
     if(!res.ok) throw new Error('OpenSheet error ' + res.status);
     const data = await res.json();
     if(!Array.isArray(data) || data.length===0){
-      questionEl.textContent = 'Lỗi: không đọc được dữ liệu. Kiểm tra quyền chia sẻ & tên sheet Characters.';
+      questionEl.textContent = 'Lỗi: không đọc được dữ liệu.';
       return;
     }
     ORIGINAL = data.map(r => {
