@@ -89,7 +89,7 @@
       <div class="start-hero" id="welcome-title">
         CHÀO MỪNG BẠN ĐẾN VỚI TRÒ CHƠI GIÁO DỤC — <strong>Học lịch sử bằng cách chơi</strong>
       </div>
-      <div class="start-sub">Hệ thống suy luận dựa trên dữ liệu từ hệ thống. Trả lời các câu hỏi để hệ thống thu hẹp và đoán nhân vật bạn đang nghĩ đến.</div>
+      <div class="start-sub">Hệ thống suy luận theo 9 tầng dựa trên dữ liệu từ Google Sheet. Trả lời các câu hỏi để hệ thống thu hẹp và đoán nhân vật.</div>
 
       <button class="start-btn" onclick="startGame()">BẮT ĐẦU CHƠI</button>
 
@@ -145,8 +145,7 @@
           <button id="restart" class="btn ghost hidden">Chơi lại</button>
         </div>
 
-        <div class="footer-note">This website is developed independently and inspired by the question-and-answer style of gameplay similar to Akinator.
-However, it is not an official product of Akinator or the company Elokence.</div>
+        <div class="footer-note">Thiết kế lấy cảm hứng từ trống đồng & cây tre — tông đỏ & vàng truyền cảm hứng lịch sử.</div>
       </div>
     </div>
   </div>
@@ -155,7 +154,7 @@ However, it is not an official product of Akinator or the company Elokence.</div
 /* ========== Cấu hình Google Sheet ========== */
 const SHEET_ID = "1TFTBGP4vqFJzzWIhLTZEEf_KumQFZNXSF-4qCv4JiAU";
 const SHEET_PAGE = "Characters";
-const OPENSHEET = `https://opensheet.elk.sh/${SHEET_ID}/${SHEET_PAGE}`;
+const OPENSHEET = https://opensheet.elk.sh/${SHEET_ID}/${SHEET_PAGE};
 
 /* ========== Helpers ========== */
 function normalize(s){ if(s==null) return ''; return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim(); }
@@ -500,15 +499,15 @@ function handleAnswer(ans){
 function showFinal(){
   controls.style.display = 'none';
   const p = remaining[0];
-  let html = `<strong style="font-size:18px;color:var(--red)">🎯 Mình đoán: ${escapeHtml(p.Name)}</strong>`;
-  html += `<div class="small"><b>Giới tính:</b> ${escapeHtml(p.GenderRaw||'')}</div>`;
-  html += `<div class="small"><b>Lĩnh vực:</b> ${escapeHtml(p.FieldRaw||'')}</div>`;
-  html += `<div class="small"><b>Miền:</b> ${escapeHtml(p.RegionRaw||'')}</div>`;
-  html += `<div class="small"><b>Tỉnh:</b> ${escapeHtml(p.ProvinceRaw||'')}</div>`;
-  html += `<div class="small"><b>Thời kỳ:</b> ${escapeHtml(p.PeriodRaw||'')}</div>`;
-  html += `<div style="margin-top:8px"><b>Thành tựu:</b> ${escapeHtml(p.AchievementRaw||'')}</div>`;
-  html += `<div style="margin-top:8px"><b>Tiểu sử:</b><br>${escapeHtml(p.BiographyRaw||'')}</div>`;
-  if(p.ImageRaw) html += `<img src="${escapeHtml(p.ImageRaw)}" class="avatar" alt="${escapeHtml(p.Name)}">`;
+  let html = <strong style="font-size:18px;color:var(--red)">🎯 Mình đoán: ${escapeHtml(p.Name)}</strong>;
+  html += <div class="small"><b>Giới tính:</b> ${escapeHtml(p.GenderRaw||'')}</div>;
+  html += <div class="small"><b>Lĩnh vực:</b> ${escapeHtml(p.FieldRaw||'')}</div>;
+  html += <div class="small"><b>Miền:</b> ${escapeHtml(p.RegionRaw||'')}</div>;
+  html += <div class="small"><b>Tỉnh:</b> ${escapeHtml(p.ProvinceRaw||'')}</div>;
+  html += <div class="small"><b>Thời kỳ:</b> ${escapeHtml(p.PeriodRaw||'')}</div>;
+  html += <div style="margin-top:8px"><b>Thành tựu:</b> ${escapeHtml(p.AchievementRaw||'')}</div>;
+  html += <div style="margin-top:8px"><b>Tiểu sử:</b><br>${escapeHtml(p.BiographyRaw||'')}</div>;
+  if(p.ImageRaw) html += <img src="${escapeHtml(p.ImageRaw)}" class="avatar" alt="${escapeHtml(p.Name)}">;
   resultEl.innerHTML = html;
   resultEl.classList.remove('hidden');
   restartBtn.classList.remove('hidden');
