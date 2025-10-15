@@ -1,11 +1,11 @@
-/* ====== CẤU HÌNH CHUNG ====== */
+/* ====== PHONG CÁCH CHỦ ĐẠO ====== */
 :root {
   --red: #b71c1c;     /* Màu đỏ chủ đạo */
   --gold: #ffd54f;    /* Màu vàng nhấn */
-  --bg: #fff8f0;      /* Nền sáng */
-  --panel: #ffffff;   /* Nền khung trắng */
-  --muted: #5a5a5a;   /* Màu chữ phụ */
-  --shadow: 0 6px 18px rgba(0,0,0,0.15);
+  --bg: #fff8f0;      /* Nền sáng dịu */
+  --panel: rgba(255, 255, 255, 0.9); /* Nền bảng trong suốt nhẹ */
+  --muted: #5a5a5a;
+  --shadow: 0 8px 24px rgba(0,0,0,0.15);
 }
 
 /* ====== TOÀN TRANG ====== */
@@ -15,15 +15,15 @@ html, body {
   padding: 0;
   font-family: Arial, sans-serif;
   color: #222;
-  background-image: url("https://giaoduclichsu.github.io/Doan-ten-danh-nhan-lich-su/bg-vietnam.jpg");
+  background-image: url('bg-vietnam.jpg'); /* ← ảnh nền cùng thư mục với index.html */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
+  overflow-x: hidden;
 }
 
-
-/* ====== BỐ CỤC CHÍNH ====== */
+/* ====== KHUNG TRUNG TÂM ====== */
 .wrap {
   display: flex;
   flex-direction: column;
@@ -36,7 +36,7 @@ html, body {
 
 /* ====== TIÊU ĐỀ ====== */
 h1, h2, h3 {
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   color: var(--red);
   text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
 }
@@ -46,25 +46,24 @@ button {
   background: var(--red);
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 12px 28px;
   font-size: 1.1em;
-  font-weight: bold;
   margin: 10px;
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(183, 28, 28, 0.4);
-  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(183, 28, 28, 0.4);
+  transition: all 0.3s ease;
 }
 button:hover {
   background: #d32f2f;
   transform: scale(1.05);
-  box-shadow: 0 6px 14px rgba(183, 28, 28, 0.5);
+  box-shadow: 0 6px 16px rgba(183, 28, 28, 0.5);
 }
 
-/* ====== KHUNG HIỂN THỊ CÂU HỎI / KẾT QUẢ ====== */
+/* ====== KHUNG CÂU HỎI / KẾT QUẢ ====== */
 .panel {
-  background: var(--panel);
-  border-radius: 12px;
+  background: var(--panel); /* trong suốt nhẹ để thấy nền */
+  border-radius: 16px;
   padding: 24px;
   box-shadow: var(--shadow);
   max-width: 700px;
@@ -86,25 +85,28 @@ footer {
   padding: 20px;
 }
 
-/* ====== TRANG BẮT ĐẦU ====== */
-.start-screen {
-  text-align: center;
-  padding: 40px;
+/* ====== NÚT BẮT ĐẦU TRÒ CHƠI ====== */
+.start-screen,
+.start-screen * {
+  font-family: Arial, sans-serif !important;
 }
 
 #start-button {
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  letter-spacing: 1px;
   background-color: var(--gold);
   color: var(--red);
   border: none;
-  border-radius: 8px;
   padding: 14px 36px;
+  border-radius: 8px;
   font-size: 18px;
-  font-weight: bold;
   cursor: pointer;
-  transition: all 0.25s ease;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease, background-color 0.3s ease;
+  box-shadow: 0 4px 10px rgba(255, 213, 79, 0.5);
 }
+
 #start-button:hover {
-  background-color: #ffe082;
+  background-color: #ffeb3b;
   transform: scale(1.05);
 }
