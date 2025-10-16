@@ -1,161 +1,155 @@
-/* === Toàn bộ giao diện chính === */
-body {
+/* ===========================================
+   GIAO DIỆN WEB LỊCH SỬ VIỆT NAM
+   PHONG CÁCH: HIỆN ĐẠI – THÂN THIỆN DI ĐỘNG
+   =========================================== */
+
+/* TOÀN TRANG */
+html, body {
   margin: 0;
   padding: 0;
   font-family: Arial;
-  background: url('bg-vietnam.jpg') center/cover no-repeat fixed;
   color: #222;
+  background: url('bg-vietnam.jpg') center/cover no-repeat fixed;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  transition: background 1.2s ease-in-out, opacity 1s ease;
   overflow-x: hidden;
 }
 
-/* Hiệu ứng mượt khi tải trang */
-body.fade-in {
-  opacity: 1;
-  transition: opacity 1s ease-in;
-}
-body {
-  opacity: 0;
-}
-body.loaded {
-  opacity: 1;
+/* LỚP PHỦ LÀM MỀM NỀN */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.75);
+  z-index: -1;
 }
 
-/* Header */
+/* HIỆU ỨNG MỜ MƯỢT */
+.fade-in {
+  animation: fadeIn 0.8s ease forwards;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* TIÊU ĐỀ TRANG */
 header {
   text-align: center;
-  padding: 20px 10px;
-  color: #b30000;
-  font-weight: bold;
+  padding: 25px 10px 10px;
+  color: #a40000;
+  letter-spacing: 1px;
+}
+header h1 {
   font-size: 2em;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+  margin-bottom: 8px;
+}
+header p {
+  font-size: 1em;
+  color: #333;
 }
 
-/* Nội dung chính */
+/* KHUNG CHÍNH */
 main {
-  flex: 1;
-  background: rgba(255, 255, 255, 0.92);
+  max-width: 800px;
+  background: rgba(255, 255, 255, 0.9);
   margin: 20px auto;
-  padding: 25px 35px;
-  border-radius: 14px;
-  max-width: 700px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-  backdrop-filter: blur(6px);
+  padding: 22px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-/* Ô câu hỏi */
+/* CÂU HỎI */
 .question-box {
-  font-size: 1.05em;
+  background: rgba(255, 255, 255, 0.95);
+  border-left: 5px solid #ffcc00;
+  padding: 16px 18px;
+  border-radius: 8px;
   margin-bottom: 20px;
-  border-left: 5px solid #f2b600;
-  padding-left: 15px;
-  line-height: 1.6;
+  font-size: 1.05em;
 }
 
-/* Nút bấm */
+/* NÚT BẤM */
 button {
-  background-color: #b30000;
+  background: #a40000;
   color: #fff;
   border: none;
-  padding: 14px 22px;
-  margin: 8px;
-  border-radius: 8px;
+  padding: 12px 24px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 1em;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: all 0.25s ease;
+  margin: 10px 5px;
+  box-shadow: 0 3px 8px rgba(164, 0, 0, 0.3);
 }
 button:hover {
-  background-color: #d62828;
+  background: #c8102e;
   transform: scale(1.05);
 }
-button:active {
-  transform: scale(0.95);
-}
 
-/* Kết quả */
+/* ẢNH NHÂN VẬT */
 .character {
   text-align: center;
   margin-top: 20px;
 }
 .character img {
-  width: 70%;
-  max-width: 280px;
+  width: 65%;
+  max-width: 250px;
   height: auto;
-  display: block;
-  margin: 15px auto;
-  border-radius: 10px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  margin-bottom: 10px;
+  transition: transform 0.3s ease;
+}
+.character img:hover {
+  transform: scale(1.03);
 }
 .character p {
   font-size: 1.1em;
-  margin-top: 8px;
+  color: #333;
+  font-weight: bold;
 }
 
-/* Footer */
+/* CHÂN TRANG */
 footer {
   text-align: center;
-  padding: 15px;
+  padding: 15px 5px 30px;
   font-size: 0.9em;
   color: #555;
 }
 
-/* === Hiệu ứng tổng thể === */
-.fade-enter {
+/* HIỆU ỨNG CHUYỂN CẢNH TOÀN TRANG */
+.page-transition {
   opacity: 0;
-  transform: translateY(10px);
+  transform: translateY(20px);
+  animation: slideFade 0.8s ease forwards;
 }
-.fade-enter-active {
-  opacity: 1;
-  transform: translateY(0);
-  transition: all 0.6s ease;
+@keyframes slideFade {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* === Tối ưu giao diện trên điện thoại dọc === */
+/* ===========================================
+   GIAO DIỆN TRÊN ĐIỆN THOẠI
+   =========================================== */
 @media (max-width: 600px) {
-  header {
-    font-size: 1.4em;
-    line-height: 1.3;
-    padding: 15px 10px;
+  header h1 {
+    font-size: 1.6em;
   }
-
   main {
-    margin: 10px;
-    padding: 16px 18px;
-    border-radius: 10px;
+    margin: 15px;
+    padding: 16px;
   }
-
-  .question-box {
-    font-size: 0.95em;
-    padding: 10px 12px;
-    line-height: 1.5;
-  }
-
   button {
     width: 100%;
     font-size: 1em;
-    padding: 12px;
-    margin: 10px 0;
+    margin: 8px 0;
   }
-
   .character img {
-    width: 90%;              /* Giảm kích thước ảnh xuống còn 90% khung */
-    max-width: 160px;        /* Ảnh không vượt quá 160px */
-    height: auto;
-    display: block;
-    margin: 10px auto 12px;  /* Căn giữa và thêm khoảng cách trên dưới */
-    border-radius: 6px;
+    width: 80%;
+    max-width: 200px;
   }
-
-  .character p {
-    font-size: 1em;
-    margin-bottom: 5px;
-  }
-
-  footer {
-    font-size: 0.85em;
-    padding: 10px 5px 20px;
+  .question-box {
+    font-size: 0.95em;
+    padding: 12px 14px;
   }
 }
