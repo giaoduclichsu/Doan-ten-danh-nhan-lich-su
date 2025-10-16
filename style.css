@@ -1,27 +1,108 @@
-/* ===============================
-   Giao diện trò chơi lịch sử Việt Nam
-   Tác giả: ChatGPT - phiên bản tối ưu mobile
-   =============================== */
-
-/* --- Cấu trúc chung --- */
+/* === Toàn bộ giao diện chính === */
 body {
   margin: 0;
   padding: 0;
   font-family: Arial;
-  background: url('bg-vietnam.jpg') center center / cover no-repeat fixed;
-  color: #111;
-  overflow-x: hidden;
+  background: url('bg-vietnam.jpg') center/cover no-repeat fixed;
+  color: #222;
   min-height: 100vh;
-  transition: opacity 0.8s ease-in-out;
-  opacity: 1;
+  display: flex;
+  flex-direction: column;
+  transition: background 1.2s ease-in-out, opacity 1s ease;
+  overflow-x: hidden;
 }
 
-/* Khi cần hiệu ứng tải (nếu có JS thêm class loaded) */
+/* Hiệu ứng mượt khi tải trang */
+body.fade-in {
+  opacity: 1;
+  transition: opacity 1s ease-in;
+}
+body {
+  opacity: 0;
+}
 body.loaded {
   opacity: 1;
 }
 
-/* --- Hiệu ứng fade cho phần tử --- */
+/* Header */
+header {
+  text-align: center;
+  padding: 20px 10px;
+  color: #b30000;
+  font-weight: bold;
+  font-size: 2em;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+/* Nội dung chính */
+main {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.92);
+  margin: 20px auto;
+  padding: 25px 35px;
+  border-radius: 14px;
+  max-width: 700px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  backdrop-filter: blur(6px);
+}
+
+/* Ô câu hỏi */
+.question-box {
+  font-size: 1.05em;
+  margin-bottom: 20px;
+  border-left: 5px solid #f2b600;
+  padding-left: 15px;
+  line-height: 1.6;
+}
+
+/* Nút bấm */
+button {
+  background-color: #b30000;
+  color: #fff;
+  border: none;
+  padding: 14px 22px;
+  margin: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+  background-color: #d62828;
+  transform: scale(1.05);
+}
+button:active {
+  transform: scale(0.95);
+}
+
+/* Kết quả */
+.character {
+  text-align: center;
+  margin-top: 20px;
+}
+.character img {
+  width: 70%;
+  max-width: 280px;
+  height: auto;
+  display: block;
+  margin: 15px auto;
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+}
+.character p {
+  font-size: 1.1em;
+  margin-top: 8px;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 15px;
+  font-size: 0.9em;
+  color: #555;
+}
+
+/* === Hiệu ứng tổng thể === */
 .fade-enter {
   opacity: 0;
   transform: translateY(10px);
@@ -32,106 +113,49 @@ body.loaded {
   transition: all 0.6s ease;
 }
 
-/* --- Container chính --- */
-.container {
-  max-width: 600px;
-  margin: 50px auto;
-  background-color: rgba(255, 255, 255, 0.85);
-  border: 3px solid #f1c40f;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-  animation: fadeIn 1s ease-in-out;
-  backdrop-filter: blur(6px);
-}
-
-/* --- Tiêu đề chính --- */
-h1, h2, h3 {
-  text-align: center;
-  color: #c0392b;
-  font-weight: bold;
-}
-
-/* --- Đoạn văn, mô tả --- */
-p {
-  line-height: 1.6;
-  font-size: 16px;
-  color: #222;
-  text-align: justify;
-}
-
-/* --- Nút bấm --- */
-button, .btn {
-  display: inline-block;
-  background-color: #e74c3c;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 12px 22px;
-  font-size: 16px;
-  cursor: pointer;
-  margin-top: 15px;
-  font-family: Arial;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-button:hover, .btn:hover {
-  background-color: #c0392b;
-  transform: scale(1.05);
-}
-
-/* --- Hình ảnh nhân vật --- */
-.character-image {
-  display: block;
-  width: 100%;
-  max-width: 350px; /* Giới hạn kích thước ảnh */
-  height: auto;
-  margin: 0 auto 15px auto;
-  border-radius: 10px;
-  border: 3px solid #f1c40f;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  object-fit: contain;
-}
-
-/* --- Chân trang / Ghi chú --- */
-footer {
-  text-align: center;
-  color: #fff;
-  font-size: 14px;
-  margin-top: 50px;
-  background-color: rgba(0, 0, 0, 0.3);
-  padding: 15px;
-}
-
-/* --- Hiệu ứng xuất hiện --- */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* --- Responsive cho điện thoại --- */
+/* === Tối ưu giao diện trên điện thoại dọc === */
 @media (max-width: 600px) {
-  .container {
-    margin: 20px 10px;
-    padding: 15px;
+  header {
+    font-size: 1.4em;
+    line-height: 1.3;
+    padding: 15px 10px;
   }
 
-  h1 {
-    font-size: 22px;
+  main {
+    margin: 10px;
+    padding: 16px 18px;
+    border-radius: 10px;
   }
 
-  p {
-    font-size: 15px;
+  .question-box {
+    font-size: 0.95em;
+    padding: 10px 12px;
+    line-height: 1.5;
   }
 
-  .character-image {
-    max-width: 250px; /* nhỏ hơn cho điện thoại */
-    border-width: 2px;
-  }
-
-  button, .btn {
+  button {
     width: 100%;
+    font-size: 1em;
     padding: 12px;
-    font-size: 15px;
+    margin: 10px 0;
+  }
+
+  .character img {
+    width: 90%;              /* Giảm kích thước ảnh xuống còn 90% khung */
+    max-width: 160px;        /* Ảnh không vượt quá 160px */
+    height: auto;
+    display: block;
+    margin: 10px auto 12px;  /* Căn giữa và thêm khoảng cách trên dưới */
+    border-radius: 6px;
+  }
+
+  .character p {
+    font-size: 1em;
+    margin-bottom: 5px;
+  }
+
+  footer {
+    font-size: 0.85em;
+    padding: 10px 5px 20px;
   }
 }
