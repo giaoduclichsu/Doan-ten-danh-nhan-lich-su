@@ -1,0 +1,138 @@
+/* ================== BIẾN MÀU ================== */
+:root {
+  --main-red: #b71c1c;     /* Đỏ chủ đạo */
+  --main-gold: #ffd54f;    /* Vàng nổi bật */
+  --text-light: #fff8e1;
+  --panel-bg: rgba(255, 255, 255, 0.9);
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+/* ================== CẤU TRÚC CHUNG ================== */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: Arial, "Times New Roman";
+  overflow: hidden;
+}
+
+/* ================== TRANG MỞ ĐẦU ================== */
+.start-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--main-red);
+  color: var(--text-light);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  z-index: 10;
+  animation: fadeIn 0.8s ease-in-out;
+  transition: opacity 1s ease-in-out;
+}
+
+.start-screen.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Tiêu đề chính */
+.start-screen h1 {
+  font-family: "Times New Roman", Arial;
+  font-weight: bold;
+  font-size: 2rem;
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+}
+
+/* Mô tả phụ */
+.start-screen p {
+  font-size: 1rem;
+  color: #fffde7;
+  max-width: 600px;
+  margin: 0 auto 20px;
+  line-height: 1.6;
+}
+
+/* Nút bắt đầu */
+#start-button {
+  background: var(--main-gold);
+  color: var(--main-red);
+  font-family: "Times New Roman", Arial !important;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  padding: 14px 32px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease;
+}
+
+#start-button:hover {
+  background: #ffe066;
+  transform: scale(1.06);
+}
+
+/* ================== TRANG CHƠI ================== */
+.main-content {
+  display: none;
+  background: url("bg-vietnam.jpg") center/cover no-repeat fixed;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+  animation: bgFade 1s ease-in-out;
+}
+
+/* Hiển thị trang chơi khi đã bắt đầu */
+body.game-started .main-content {
+  display: flex;
+}
+
+/* ================== HỘP NỘI DUNG ================== */
+.panel {
+  background: var(--panel-bg);
+  backdrop-filter: blur(14px);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  padding: 40px 60px;
+  max-width: 800px;
+  text-align: center;
+  color: #222;
+  animation: fadeInUp 0.8s ease;
+}
+
+/* ================== HIỆU ỨNG ================== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bgFade {
+  from { filter: brightness(70%) blur(6px); }
+  to { filter: brightness(100%) blur(0px); }
+}
+
+/* ================== RESPONSIVE ================== */
+@media (max-width: 600px) {
+  .start-screen h1 {
+    font-size: 1.5rem;
+  }
+  .panel {
+    width: 90%;
+    padding: 24px;
+  }
+  #start-button {
+    font-size: 1rem;
+    padding: 10px 22px;
+  }
+}

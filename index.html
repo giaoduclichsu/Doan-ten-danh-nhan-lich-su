@@ -1,0 +1,710 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Đoán tên danh nhân lịch sử Việt Nam</title>
+
+  <!-- style nhúng để tránh lỗi khi style.css không được load -->
+  <style>
+    /* ===== Theme & fonts: dùng Arial chính, fallback Times New Roman ===== */
+    :root{
+      --red: #b71c1c;
+      --gold: #ffd54f;
+      --muted: #666;
+      --panel: rgba(255,255,255,0.95);
+      --glass-shadow: 0 20px 50px rgba(10,30,60,0.08);
+      --card-radius: 18px;
+    }
+    html,body{
+      height:100%;
+      margin:0;
+      padding:0;
+      font-family: Arial, "Times New Roman", serif;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      background: #fff8f0;
+      color:#222;
+    }
+
+    /* ========== START SCREEN (full-screen) ========== */
+    .start-screen{
+      position:fixed;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:2000;
+      transition:opacity .45s ease;
+      /* background image for start screen (first-class.jpg) */
+      background-image: url('first-class.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    /* overlay to make text visible over image */
+    .start-screen::before{
+      content:"";
+      position:absolute; inset:0;
+      mix-blend-mode: multiply;
+      pointer-events:none;
+    }
+    .start-card{
+      position:relative;
+      z-index:2;
+      width:min(1100px,94%);
+      max-width:1100px;
+      padding:36px;
+      border-radius:20px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.04));
+      box-shadow: 0 20px 60px rgba(0,0,0,0.26);
+      text-align:center;
+      color: #fff;
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .start-card h1{
+      margin: 6px 0 8px;
+      font-size:34px;
+      letter-spacing:1px;
+      font-weight:700;
+      color: #fff;
+      text-shadow: 0 4px 18px rgba(0,0,0,0.18);
+      font-family: "Times New Roman", Arial, serif;
+    }
+    .start-card p{
+      margin: 10px auto 18px;
+      max-width: 860px;
+      line-height:1.6;
+      font-size:16px;
+      color: rgba(255,255,255,0.92);
+    }
+    #start-button{
+      background: var(--gold);
+      color: var(--red);
+      border:0;
+      padding:14px 28px;
+      border-radius:12px;
+      font-weight:800;
+      letter-spacing:1px;
+      cursor:pointer;
+      font-size:18px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.22);
+      transition: transform .16s ease, box-shadow .16s ease;
+      font-family: "Times New Roman";
+    }
+    #start-button:active{ transform: translateY(2px) }
+    .start-note{
+      margin-top:14px;
+      font-size:13px;
+      color: rgba(255,255,255,0.85);
+    }
+
+    /* ========== MAIN GAME LAYOUT (hidden until start) ========== */
+    .app-wrap{
+      min-height:100vh;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:40px 20px;
+      box-sizing:border-box;
+      background-image: url('bg-vietnam.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      transition: background-image .6s ease;
+    }
+
+    .card{
+      width:min(980px,96%);
+      background: var(--panel);
+      border-radius: var(--card-radius);
+      padding:28px 36px;
+      box-shadow: var(--glass-shadow);
+      margin-top:20px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    /* decorative star icon (replace trống đồng) */
+    .header{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      margin-bottom:12px;
+    }
+    .star-icon{
+      width:46px;height:46px;border-radius:999px;background:var(--gold);
+      display:flex;align-items:center;justify-content:center;
+      flex-shrink:0;box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+      border:3px solid rgba(255,255,255,0.6);
+    }
+    .title{
+      color: var(--red);
+      font-size:28px;
+      font-weight:800;
+      margin:0;
+      font-family: "Times New Roman", Arial, serif;
+    }
+    .subtitle{ margin:4px 0 12px;color:var(--muted);font-size:13px }
+
+    .question{ font-size:20px;margin:26px 0;min-height:54px;text-align:center;font-weight:700; color:#0b2240 }
+
+    .controls{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap }
+    .btn{
+      padding:12px 20px;border-radius:12px;border:0;cursor:pointer;font-weight:800;background:var(--red);color:white;
+      box-shadow: 0 8px 20px rgba(183,28,28,0.12);transition:transform .12s;
+      font-family: Arial, "Times New Roman", serif;
+    }
+    .btn.gray{ background:#6b7280 }
+    .btn.ghost{ background:transparent;border:2px solid var(--red);color:var(--red) }
+
+    .hint{ text-align:center;color:var(--muted); margin-top:10px; font-size:13px }
+
+    .result{ margin-top:20px;background:linear-gradient(180deg,#fff8e6,#fff8f0);padding:16px;border-radius:12px; border-left:6px solid var(--gold) }
+
+    .avatar{ display:block;margin:12px auto; max-width:320px; border-radius:10px; box-shadow:0 12px 30px rgba(0,0,0,0.08) }
+
+    .small{ font-size:13px;color:#444;margin-top:8px }
+
+    #restart{ margin-top:12px; }
+
+    /* responsive */
+    @media (max-width:640px){
+      .start-card{ padding:22px }
+      .start-card h1{ font-size:22px }
+      .question{ font-size:18px }
+      .avatar{ max-width:92%; }
+      .card{ padding:18px }
+    }
+
+    /* subtle fade */
+    .fade-in{ animation: fadeIn .45s ease both; }
+    @keyframes fadeIn{ from{ opacity:0; transform: translateY(8px) } to{ opacity:1; transform:none } }
+
+    /* small warning style */
+    .warn { color:#b35200; font-weight:600 }
+
+    /* hide by default */
+    .hidden{ display:none !important; }
+
+  </style>
+</head>
+
+<body>
+  <!-- ========== Start screen: first-class.jpg as background ========== -->
+  <div id="startScreen" class="start-screen" role="dialog" aria-modal="true">
+    <div class="start-card fade-in" role="document" aria-labelledby="welcome-title">
+      <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px">
+        <!-- star icon image (replace with your star image file if you have) -->
+        <img src="star-yellow.png" alt="star" style="width:56px;height:56px;object-fit:contain;border-radius:999px;background:transparent">
+      </div>
+
+      <h1 id="welcome-title">ĐOÁN TÊN DANH NHÂN LỊCH SỬ VIỆT NAM</h1>
+
+      <p>
+        CHÀO MỪNG BẠN ĐẾN VỚI TRÒ CHƠI GIÁO DỤC — <strong>ĐOÁN TÊN DANH NHÂN LỊCH SỬ VIỆT NAM</strong>.
+        Hệ thống suy luận theo câu trả lời của bạn và đoán ra nhân vật mà bạn đang nghĩ đến.
+
+      <div style="text-align:center;margin-top:14px">
+        <button id="start-button">BẮT ĐẦU CHƠI</button>
+      </div>
+
+      <div class="start-note" style="text-align:center;margin-top:18px">
+        This website is developed independently and inspired by the question-and-answer style of gameplay similar to Akinator.
+However, it is not an official product of Akinator or the company Elokence.
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== Game app (hidden until start) ========== -->
+  <div id="app" class="app-wrap" style="display:none;">
+    <div class="card fade-in" role="main" aria-live="polite">
+      <div class="header">
+        <div class="star-icon" aria-hidden>
+          <!-- svg star as decorative (in case star image missing) -->
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#b97300" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+            <path d="M12 2l2.6 6.7L21 10l-5 3.6L17 21l-5-3.2L7 21l1-7.4L3 10l6.4-1.3L12 2z"/>
+          </svg>
+        </div>
+        <div style="flex:1">
+          <div class="title">Đoán danh nhân lịch sử Việt Nam</div>
+          <div class="subtitle">Trò chơi suy luận từ câu trả lời của bạn để đoán nhân vật</div>
+        </div>
+      </div>
+
+      <div id="main">
+        <div id="question" class="question">Đang tải dữ liệu...</div>
+
+        <div class="controls" id="controls" role="group" aria-label="Các lựa chọn">
+          <button id="btnYes" class="btn">Đúng</button>
+          <button id="btnNo" class="btn gray">Không</button>
+          <button id="btnUnknown" class="btn ghost">Không biết</button>
+        </div>
+
+        <div id="hint" class="hint" aria-live="polite"></div>
+
+        <div id="result" class="result hidden" aria-live="polite"></div>
+
+        <div style="text-align:center;margin-top:12px">
+          <button id="restart" class="btn ghost hidden">Chơi lại</button>
+        </div>
+
+        <div class="small" style="text-align:center;margin-top:14px;color:rgba(0,0,0,0.45)">
+          Dù đã được chăm chút kĩ lưỡng, trò chơi khó tránh khỏi đôi điều sai sót. Rất mong nhận được góp ý và bổ sung của bạn tại địa chỉ nguyentai121218@gmail.com, để cùng chúng tôi ngày càng hoàn thiện sản phẩm hơn.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================= JAVASCRIPT (game logic) ========================= -->
+  <script>
+    /* ================== Configuration: Google Sheet ================== */
+    const SHEET_ID = "1TFTBGP4vqFJzzWIhLTZEEf_KumQFZNXSF-4qCv4JiAU"; // nếu đổi thì sửa ở đây
+    const SHEET_PAGE = "Characters";
+    const OPENSHEET = `https://opensheet.elk.sh/${SHEET_ID}/${SHEET_PAGE}`;
+
+    /* ================== Utility helpers ================== */
+    function normalize(s){ if(s==null) return ''; return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim(); }
+    function boolLike(s){
+      const v = normalize(s);
+      if(v==='') return null;
+      if(['co','có','yes','true','1','sinh','sống','con song'].some(x=>v.includes(x))) return true;
+      if(['khong','không','no','false','0','mat','mất','qua doi','qua-đời','qua-doi'].some(x=>v.includes(x))) return false;
+      return null;
+    }
+    function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+    function escapeHtml(s){ if(!s) return ''; return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+    function preloadImage(src){
+      const img = new Image();
+      img.src = src;
+      return img;
+    }
+
+    /* ================== UI refs ================== */
+    const startScreen = document.getElementById('startScreen');
+    const startButton = document.getElementById('start-button');
+    const app = document.getElementById('app');
+    const questionEl = document.getElementById('question');
+    const btnYes = document.getElementById('btnYes');
+    const btnNo = document.getElementById('btnNo');
+    const btnUnknown = document.getElementById('btnUnknown');
+    const hintEl = document.getElementById('hint');
+    const resultEl = document.getElementById('result');
+    const restartBtn = document.getElementById('restart');
+    const controls = document.getElementById('controls');
+
+    /* ================== State ================== */
+    let ORIGINAL = [];
+    let remaining = [];
+    let askedTokens = new Set();
+    let step = 0;
+    let currentQ = null;
+    let achievementAsked = false;
+
+    /* ================== Preload images to avoid delayed background flashing ========== */
+    preloadImage('bg-vietnam.jpg');
+    preloadImage('first-class.jpg');
+    preloadImage('star-yellow.png');
+
+    /* ================== Load data from Google Sheet ================== */
+    async function loadData(){
+      try{
+        questionEl.textContent = 'Đang tải dữ liệu từ Google Sheet...';
+        const res = await fetch(OPENSHEET, {cache:'no-store'});
+        if(!res.ok) throw new Error('OpenSheet error ' + res.status);
+        const data = await res.json();
+        if(!Array.isArray(data) || data.length===0){
+          questionEl.textContent = 'Lỗi: không đọc được dữ liệu. Kiểm tra quyền chia sẻ & tên sheet Characters.';
+          return;
+        }
+        // normalize rows; support several column name variants
+        ORIGINAL = data.map(r => {
+          const f = (keys)=> keys.find(k => r[k] !== undefined);
+          const Name = r[f(['name','Name','Tên','ten'])] || '';
+          const Alive = r[f(['alive','Alive','còn sống','con song','sinh'])] || '';
+          const Gender = r[f(['gender','Gender','giới tính','gioi tinh'])] || '';
+          const Field = r[f(['field','Field','lĩnh vực','linh vuc','linhvuc'])] || '';
+          const Region = r[f(['region','Region','vùng','miền','mien'])] || '';
+          const Period = r[f(['period','Period','thời kì','thời kỳ','thoi ky','thoiky'])] || '';
+          const Event = r[f(['event','Event','sự kiện','su kien','sukien'])] || '';
+          const Province = r[f(['province','Province','tỉnh','tinh','que quan','quê quán'])] || '';
+          const Died2000 = r[f(['died_before_2000','diedbefore2000','mất trước 2000','mat truoc 2000','died2000'])] || '';
+          const Achievement = r[f(['achievement','Achievement','thành tựu','thanh tuu','contribution'])] || '';
+          const Biography = r[f(['biography','Biography','tiểu sử','tieu su','bio'])] || '';
+          const Image = r[f(['image','Image','ImageURL','imageurl','hinh','url'])] || '';
+          return {
+            Name: String(Name).trim(),
+            AliveRaw: String(Alive).trim(),
+            AliveBool: boolLike(Alive),
+            GenderRaw: String(Gender).trim(),
+            FieldRaw: String(Field).trim(),
+            RegionRaw: String(Region).trim(),
+            PeriodRaw: String(Period).trim(),
+            EventRaw: String(Event).trim(),
+            ProvinceRaw: String(Province).trim(),
+            Died2000Raw: String(Died2000).trim(),
+            AchievementRaw: String(Achievement).trim(),
+            BiographyRaw: String(Biography).trim(),
+            ImageRaw: String(Image).trim(),
+            _norm: {
+              name: normalize(Name),
+              alive: normalize(Alive),
+              gender: normalize(Gender),
+              field: normalize(Field),
+              region: normalize(Region),
+              period: normalize(Period),
+              event: normalize(Event),
+              province: normalize(Province),
+              died2000: normalize(Died2000),
+              achievement: normalize(Achievement)
+            }
+          };
+        });
+
+        // start the round
+        startRound();
+      }catch(err){
+        console.error(err);
+        questionEl.textContent = 'Lỗi khi tải dữ liệu. Mở DevTools (F12) xem console.';
+      }
+    }
+
+    /* ================== helpers ================== */
+    function inferRegionFromProvince(provNorm){
+      if(!provNorm) return '';
+      const p = provNorm.toLowerCase();
+      const north = ['ha noi','hanoi','nam dinh','ninh binh','thai binh','bac ninh','hai duong','phu tho','hoa binh','quang ninh','thanh hoa','nghe an','ha giang'];
+      const central = ['quang','thua thien','quang binh','quang nam','quang ngai','binh dinh','phu yen','khanh hoa','da nang','quang tri','ha tinh'];
+      const south = ['ho chi minh','tp hcm','vinh long','can tho','dong nai','binh duong','an giang','kien giang','vung tau','tay ninh','long an','ba ria'];
+      for(const k of north) if(p.includes(k)) return 'bac';
+      for(const k of central) if(p.includes(k)) return 'trung';
+      for(const k of south) if(p.includes(k)) return 'nam';
+      return '';
+    }
+
+    /* ================== Build question by step (random within same tier) ================== */
+    function buildQuestionForStep(s){
+      // Step mapping:
+      // 0: Alive
+      // 1: Gender (Nam?)
+      // 2: Field (lĩnh vực)
+      // 3: Region
+      // 4: Period (tiền sử/phong kiến/cận đại/hiện đại) -> if 'tien su' then skip event question
+      // 5: Event (nổi tiếng vì...)
+      // 6: Province
+      // 7: DiedBefore2000
+      // 8: Achievement (final)
+
+      if(s===0) return { key:'Alive', display:'Nhân vật này còn sống đúng không?' };
+      if(s===1) return { key:'Gender', display:'Nhân vật này là Nam đúng không?' };
+
+      if(s===2){
+        const vals = [...new Set(remaining.map(r=>r._norm.field).filter(Boolean))];
+        if(vals.length===0) return null;
+        const pool = vals.filter(v => !askedTokens.has('field:'+v));
+        const chosen = pool.length ? pick(pool) : pick(vals);
+        return { key:'Field', token: chosen, display: `Nhân vật này hoạt động trong lĩnh vực "${remaining.find(x=>x._norm.field===chosen)?.FieldRaw || chosen}" đúng không?` };
+      }
+
+      if(s===3){
+        const regs = [...new Set(remaining.map(r=> r._norm.region || inferRegionFromProvince(r._norm.province)).filter(Boolean))];
+        const pool = regs.length ? regs : ['bac','trung','nam'];
+        const poolNotAsked = pool.filter(p=>!askedTokens.has('region:'+p));
+        const chosen = poolNotAsked.length ? pick(poolNotAsked) : pick(pool);
+        const map = { bac:'Bắc', trung:'Trung', nam:'Nam' };
+        return { key:'Region', token:chosen, display:`Nhân vật này ở miền ${map[chosen] || chosen} đúng không?` };
+      }
+
+      if(s===4){
+        const vals = [...new Set(remaining.map(r=>r._norm.period).filter(Boolean))];
+        if(vals.length===0) return null;
+        const pool = vals.filter(v=>!askedTokens.has('period:'+v));
+        const chosen = pool.length ? pick(pool) : pick(vals);
+        return { key:'Period', token:chosen, display:`Nhân vật này thuộc thời kỳ "${remaining.find(x=>x._norm.period===chosen)?.PeriodRaw || chosen}" đúng không?` };
+      }
+
+      if(s===5){
+        // if all remaining are tiền sử, skip event
+        const periods = [...new Set(remaining.map(r=>r._norm.period))];
+        if(periods.length===1 && periods[0] === 'tien su') return null;
+        const evs = [...new Set(remaining.map(r=>r._norm.event).filter(Boolean))];
+        if(evs.length===0) return null;
+        const pool = evs.filter(e=>!askedTokens.has('ev:'+e));
+        const chosen = pool.length ? pick(pool) : pick(evs);
+        return { key:'Event', token:chosen, display:`Nhân vật này nổi tiếng bởi sự kiện "${remaining.find(x=>x._norm.event===chosen)?.EventRaw || chosen}" đúng không?` };
+      }
+
+      if(s===6){
+        const provs = [...new Set(remaining.map(r=>r._norm.province).filter(Boolean))];
+        if(provs.length===0) return null;
+        const pool = provs.filter(p=>!askedTokens.has('prov:'+p));
+        const chosen = pool.length ? pick(pool) : pick(provs);
+        return { key:'Province', token:chosen, display:`Nhân vật này quê quán ở ${remaining.find(x=>x._norm.province===chosen)?.ProvinceRaw || chosen} đúng không?` };
+      }
+
+      if(s===7){
+        const vals = Array.from(new Set(remaining.map(r=>r._norm.died2000)));
+        const meaningful = vals.filter(v=>v!=='');
+        if(meaningful.length > 1 || (meaningful.length===1 && vals.length>1)){
+          if(!askedTokens.has('died_before_2000')) return { key:'DiedBefore2000', display:'Nhân vật này mất trước năm 2000 đúng không?' };
+        }
+        return null;
+      }
+
+      if(s===8){
+        const achs = [...new Set(remaining.map(r=>r._norm.achievement).filter(Boolean))];
+        if(achs.length===0){
+          const names = remaining.map(r=>r._norm.name).filter(Boolean);
+          if(names.length) return { key:'Name', token:names[0], display:`Người này có phải là ${remaining.find(x=>x._norm.name===names[0]).Name} không?` };
+          return null;
+        }
+        const pool = achs.filter(a=>!askedTokens.has('ach:'+a));
+        const chosen = pool.length ? pick(pool) : pick(achs);
+        return { key:'Achievement', token:chosen, display:`Nhân vật này có phải là người đã "${remaining.find(x=>x._norm.achievement===chosen)?.AchievementRaw || chosen}" không?` };
+      }
+
+      return null;
+    }
+
+    /* ================== Apply filter safely: avoid removing all candidates accidentally ========== */
+    function applyFilterSafely(tokenLabel, filtered){
+      if(!Array.isArray(filtered)) filtered = [];
+      if(filtered.length === 0){
+        // if filter would remove all, skip question (mark asked to avoid infinite loop)
+        console.warn('Filter would remove all candidates for', tokenLabel);
+        hintEl.innerHTML = '<span class="warn">Câu trả lời mâu thuẫn với dữ liệu; hệ thống bỏ qua câu hỏi này.</span>';
+        if(tokenLabel) askedTokens.add(tokenLabel);
+        return false;
+      }
+      remaining = filtered;
+      return true;
+    }
+
+    /* ================== Start / Restart round ================== */
+    function startRound(){
+      remaining = ORIGINAL.slice();
+      askedTokens = new Set();
+      step = 0;
+      currentQ = null;
+      achievementAsked = false;
+      resultEl.classList.add('hidden');
+      restartBtn.classList.add('hidden');
+      controls.style.display = '';
+      hintEl.textContent = '';
+      nextQuestion();
+    }
+
+    // Restart button - show intro again
+    restartBtn.addEventListener('click', () => {
+      // back to start screen
+      app.style.display = 'none';
+      startScreen.style.display = '';
+      startScreen.style.opacity = '1';
+      // clear UI state so when player returns it restarts fresh
+      questionEl.textContent = 'Nhấn BẮT ĐẦU CHƠI để bắt đầu.';
+      // reset arrays
+      ORIGINAL = ORIGINAL; // keep loaded dataset
+      remaining = ORIGINAL.slice();
+      askedTokens = new Set();
+      step = 0;
+      currentQ = null;
+      achievementAsked = false;
+      resultEl.classList.add('hidden');
+      restartBtn.classList.add('hidden');
+      controls.style.display = '';
+      hintEl.textContent = '';
+    });
+
+    /* ================== Next question logic ================== */
+    function nextQuestion(){
+      hintEl.textContent = '';
+      resultEl.classList.add('hidden');
+      restartBtn.classList.add('hidden');
+      controls.style.display = '';
+
+      // If only one remaining and achievement not asked, force achievement
+      if(remaining.length === 1){
+        const ach = remaining[0]._norm.achievement;
+        if(ach && !askedTokens.has('ach:'+ach)){
+          step = 8;
+        } else {
+          showFinal();
+          return;
+        }
+      }
+
+      if(remaining.length === 0){
+        showNoCandidateWithAdd();
+        return;
+      }
+
+      // find next question - try current step, if none increment step until one found
+      let attempts = 0;
+      let q = null;
+      while(attempts < 12){
+        q = buildQuestionForStep(step);
+        if(q) break;
+        step++;
+        attempts++;
+      }
+      if(!q) q = buildQuestionForStep(step);
+      if(!q){
+        questionEl.textContent = 'Không có câu hỏi phù hợp. Vui lòng thử lại.';
+        controls.style.display = 'none';
+        restartBtn.classList.remove('hidden');
+        return;
+      }
+      currentQ = q;
+      questionEl.textContent = q.display;
+    }
+
+    /* ================== Handle answer ================== */
+    function handleAnswer(choice){
+      if(!currentQ){
+        step++;
+        nextQuestion();
+        return;
+      }
+      const k = currentQ.key;
+      const tok = currentQ.token;
+
+      // unknown behavior: just mark token as asked (to avoid repeated questions)
+      if(choice === 'unknown'){
+        if(tok){
+          if(k==='Field') askedTokens.add('field:'+tok);
+          if(k==='Event') askedTokens.add('ev:'+tok);
+          if(k==='Province') askedTokens.add('prov:'+tok);
+          if(k==='Achievement') askedTokens.add('ach:'+tok);
+          if(k==='Name') askedTokens.add('name:'+tok);
+          if(k==='Region') askedTokens.add('region:'+tok);
+          if(k==='Period') askedTokens.add('period:'+tok);
+        }
+        if(k==='DiedBefore2000') askedTokens.add('died_before_2000');
+        step++;
+        nextQuestion();
+        return;
+      }
+
+      let filtered = remaining.slice();
+
+      if(k === 'Alive'){
+        if(choice === 'yes') filtered = remaining.filter(p => p.AliveBool === true || (p._norm.alive && p._norm.alive.includes('co')));
+        else filtered = remaining.filter(p => !(p.AliveBool === true || (p._norm.alive && p._norm.alive.includes('co'))));
+      } else if(k === 'Gender'){
+        if(choice === 'yes') filtered = remaining.filter(p => p._norm.gender && p._norm.gender.includes('nam'));
+        else filtered = remaining.filter(p => !(p._norm.gender && p._norm.gender.includes('nam')));
+      } else if(k === 'Field' && tok){
+        if(choice === 'yes') filtered = remaining.filter(p => p._norm.field === tok || (p._norm.field && p._norm.field.includes(tok)));
+        else filtered = remaining.filter(p => !(p._norm.field === tok || (p._norm.field && p._norm.field.includes(tok))));
+        askedTokens.add('field:'+tok);
+      } else if(k === 'Region' && tok){
+        if(choice === 'yes') filtered = remaining.filter(p => (p._norm.region === tok) || (p._norm.region && p._norm.region.includes(tok)) || (inferRegionFromProvince(p._norm.province) === tok));
+        else filtered = remaining.filter(p => !((p._norm.region === tok) || (p._norm.region && p._norm.region.includes(tok)) || (inferRegionFromProvince(p._norm.province) === tok)));
+        askedTokens.add('region:'+tok);
+      } else if(k === 'Period' && tok){
+        if(choice === 'yes') filtered = remaining.filter(p => p._norm.period === tok || (p._norm.period && p._norm.period.includes(tok)));
+        else filtered = remaining.filter(p => !(p._norm.period === tok || (p._norm.period && p._norm.period.includes(tok))));
+        askedTokens.add('period:'+tok);
+      } else if(k === 'Event' && tok){
+        if(choice === 'yes') filtered = remaining.filter(p => p._norm.event === tok || (p._norm.event && p._norm.event.includes(tok)));
+        else filtered = remaining.filter(p => !(p._norm.event === tok || (p._norm.event && p._norm.event.includes(tok))));
+        askedTokens.add('ev:'+tok);
+      } else if(k === 'Province' && tok){
+        if(choice === 'yes') filtered = remaining.filter(p => p._norm.province === tok || (p._norm.province && p._norm.province.includes(tok)));
+        else filtered = remaining.filter(p => !(p._norm.province === tok || (p._norm.province && p._norm.province.includes(tok))));
+        askedTokens.add('prov:'+tok);
+      } else if(k === 'DiedBefore2000'){
+        if(choice === 'yes') filtered = remaining.filter(p => {
+          const v = p._norm.died2000||'';
+          return v.includes('co') || v.includes('yes') || v.includes('true') || v.includes('1');
+        });
+        else filtered = remaining.filter(p => {
+          const v = p._norm.died2000||'';
+          return !(v.includes('co') || v.includes('yes') || v.includes('true') || v.includes('1'));
+        });
+        askedTokens.add('died_before_2000');
+      } else if(k === 'Achievement' && tok){
+        if(choice === 'yes') filtered = remaining.filter(p => p._norm.achievement === tok || (p._norm.achievement && p._norm.achievement.includes(tok)));
+        else filtered = remaining.filter(p => !(p._norm.achievement === tok || (p._norm.achievement && p._norm.achievement.includes(tok))));
+        askedTokens.add('ach:'+tok);
+        achievementAsked = true;
+      } else if(k === 'Name' && tok){
+        if(choice === 'yes') filtered = remaining.filter(p => p._norm.name === tok);
+        else filtered = remaining.filter(p => p._norm.name !== tok);
+        askedTokens.add('name:'+tok);
+      }
+
+      const tokenLabel = tok ? (k==='Achievement' ? 'ach:'+tok : (k==='Province' ? 'prov:'+tok : tok)) : (k==='DiedBefore2000' ? 'died_before_2000' : null);
+      const applied = applyFilterSafely(tokenLabel, filtered);
+      if(applied) hintEl.textContent = '';
+      step++;
+      // ensure if many achievements exist we prioritize asking them
+      const achVals = Array.from(new Set(remaining.map(p => p._norm.achievement).filter(Boolean)));
+      if(remaining.length > 1 && achVals.length > 1) step = Math.min(step, 8);
+      nextQuestion();
+    }
+
+    /* ================== Show final candidate ================== */
+    function showFinal(){
+      controls.style.display = 'none';
+      const p = remaining[0];
+      let html = `<strong style="font-size:18px;color:var(--red)">🎯 Mình đoán: ${escapeHtml(p.Name)}</strong>`;
+      html += `<div class="small"><b>Giới tính:</b> ${escapeHtml(p.GenderRaw||'')}</div>`;
+      html += `<div class="small"><b>Lĩnh vực:</b> ${escapeHtml(p.FieldRaw||'')}</div>`;
+      html += `<div class="small"><b>Miền:</b> ${escapeHtml(p.RegionRaw||'')}</div>`;
+      html += `<div class="small"><b>Tỉnh:</b> ${escapeHtml(p.ProvinceRaw||'')}</div>`;
+      html += `<div class="small"><b>Thời kỳ:</b> ${escapeHtml(p.PeriodRaw||'')}</div>`;
+      html += `<div style="margin-top:8px"><b>Thành tựu:</b> ${escapeHtml(p.AchievementRaw||'')}</div>`;
+      html += `<div style="margin-top:8px"><b>Tiểu sử:</b><br>${escapeHtml(p.BiographyRaw||'')}</div>`;
+      if(p.ImageRaw) html += `<img src="${escapeHtml(p.ImageRaw)}" class="avatar" alt="${escapeHtml(p.Name)}">`;
+      resultEl.innerHTML = html;
+      resultEl.classList.remove('hidden');
+      restartBtn.classList.remove('hidden');
+      questionEl.textContent = 'Mình đã đoán xong — bạn muốn chơi lại?';
+    }
+
+    /* ================== No candidate found -> show message and offer to add ================== */
+    function showNoCandidateWithAdd(){
+      controls.style.display = 'none';
+      resultEl.innerHTML = `<strong style="color:var(--red)">😅 Mình không đoán ra nhân vật này.</strong>
+        <div class="small" style="margin-top:8px">
+          Có thể dữ liệu trong Sheet chưa có hoặc câu trả lời mâu thuẫn với dữ liệu hiện có.<br>
+          Bạn có thể bổ sung nhân vật vào Google Sheet — mình sẽ học và cải thiện lần sau!
+        </div>`;
+      resultEl.classList.remove('hidden');
+      restartBtn.classList.remove('hidden');
+      questionEl.textContent = 'Mình chưa đoán được — bạn muốn chơi lại?';
+    }
+
+    /* ================== Bind UI events ================== */
+    btnYes.addEventListener('click', ()=> handleAnswer('yes'));
+    btnNo.addEventListener('click', ()=> handleAnswer('no'));
+    btnUnknown.addEventListener('click', ()=> handleAnswer('unknown'));
+
+    /* ================== Start button ================== */
+    startButton.addEventListener('click', () => {
+      // fade out start screen, show app
+      startScreen.style.opacity = '0';
+      setTimeout(()=> {
+        startScreen.style.display = 'none';
+        // show app & ensure background uses bg-vietnam.jpg (preloaded)
+        app.style.display = 'block';
+        // briefly show loading text while fetching sheet
+        questionEl.textContent = 'Đang tải dữ liệu...';
+        // load data (if not loaded yet)
+        loadData();
+      }, 420);
+    });
+
+    // Initial placeholder
+    questionEl.textContent = 'Nhấn BẮT ĐẦU CHƠI để bắt đầu.';
+
+    // Expose startRound for debug if needed
+    window.startRound = startRound;
+
+  </script>
+</body>
+</html>
+
+
