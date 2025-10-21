@@ -399,13 +399,57 @@ However, it is not an official product of Akinator or the company Elokence.
       if(s===0) return { key:'Alive', display:'Nhân vật này còn sống đúng không?' };
       if(s===1) return { key:'Gender', display:'Nhân vật này là Nam đúng không?' };
 
-      if(s===2){
-        const vals = [...new Set(remaining.map(r=>r._norm.field).filter(Boolean))];
-        if(vals.length===0) return null;
-        const pool = vals.filter(v => !askedTokens.has('field:'+v));
-        const chosen = pool.length ? pick(pool) : pick(vals);
-        return { key:'Field', token: chosen, display: `Nhân vật này hoạt động trong lĩnh vực "${remaining.find(x=>x._norm.field===chosen)?.FieldRaw || chosen}" đúng không?` };
-      }
+           if (s === 2) {
+  // ====== NÂNG CẤP LĨNH VỰC: TÁCH VÀ HỎI NHIỀU LĨNH VỰC ======
+  let allFields = [];
+
+  // Tách lĩnh vực có dấu & không dấu
+  remaining.forEach(r => {
+    if (r.FieldRaw) {
+      const parts = r.FieldRaw
+        .split(/[,;]+/)
+        .map(v => v.trim())
+        .filter(v => v !== '');
+      allFields.push(...parts.map(p => ({ norm: normalize(p), raw: p })));
+    }
+  });
+
+  // Loại trùng
+  const uniqueFields = [];
+  const seen = new Set();
+  for (const f of allFields) {
+    if (!seen.has(f.norm)) {
+      seen.add(f.norm);
+      uniqueFields.push(f);
+    }
+  }
+
+  if (uniqueFields.length === 0) return null;
+
+  // Các lĩnh vực chưa hỏi
+  const notAsked = uniqueFields.filter(f => !askedTokens.has('field:' + f.norm));
+
+  // Nếu chưa hỏi lĩnh vực nào, hoặc cần hỏi thêm
+  const fieldAskedCount = Array.from(askedTokens).filter(t => t.startsWith('field:')).length;
+  const MAX_FIELD_QUESTIONS = 4; // có thể hỏi tối đa 4 câu lĩnh vực
+
+  // Nếu mới chỉ có 1 lĩnh vực duy nhất trong dữ liệu
+  const uniqueFieldSet = new Set(remaining.map(r => r._norm.field));
+  const shouldAskMore = uniqueFieldSet.size === 1 && remaining.length > 1;
+
+  if ((notAsked.length > 0 && fieldAskedCount < MAX_FIELD_QUESTIONS) || shouldAskMore) {
+    const chosen = pick(notAsked.length ? notAsked : uniqueFields);
+    return {
+      key: 'Field',
+      token: chosen.norm,
+      display: `Nhân vật này có liên quan đến lĩnh vực "${chosen.raw}" đúng không?`
+    };
+  } else {
+    // Nếu đã hỏi đủ các lĩnh vực khả dụng, chuyển tầng tiếp
+    step++;
+    return buildQuestionForStep(step);
+  }
+}
 
       if(s===3){
         const regs = [...new Set(remaining.map(r=> r._norm.region || inferRegionFromProvince(r._norm.province)).filter(Boolean))];
@@ -706,5 +750,6 @@ However, it is not an official product of Akinator or the company Elokence.
   </script>
 </body>
 </html>
+
 
 
