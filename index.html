@@ -476,7 +476,7 @@ However, it is not an official product of Akinator or the company Elokence.
         if(evs.length===0) return null;
         const pool = evs.filter(e=>!askedTokens.has('ev:'+e));
         const chosen = pool.length ? pick(pool) : pick(evs);
-        return { key:'Event', token:chosen, display:`Nhân vật này nổi tiếng bởi sự kiện "${remaining.find(x=>x._norm.event===chosen)?.EventRaw || chosen}" đúng không?` };
+        return { key:'Event', token:chosen, display:`Nhân vật này nổi tiếng bởi sự kiện ở "${remaining.find(x=>x._norm.event===chosen)?.EventRaw || chosen}" đúng không?` };
       }
 
       if(s===6){
@@ -750,6 +750,7 @@ However, it is not an official product of Akinator or the company Elokence.
   </script>
 </body>
 </html>
+
 
 
 
