@@ -385,131 +385,159 @@ However, it is not an official product of Akinator or the company Elokence.
 
     /* ================== Build question by step (random within same tier) ================== */
     function buildQuestionForStep(s){
-      // Step mapping:
-      // 0: Alive
-      // 1: Gender (Nam?)
-      // 2: Field (lĩnh vực)
-      // 3: Region
-      // 4: Period (tiền sử/phong kiến/cận đại/hiện đại) -> if 'tien su' then skip event question
-      // 5: Event (nổi tiếng vì...)
-      // 6: Province
-      // 7: DiedBefore2000
-      // 8: Achievement (final)
+  // Step mapping:
+  // 0: Alive
+  // 1: Gender
+  // 2: Field
+  // 3: Region
+  // 4: Period
+  // 5: Event
+  // 6: Province
+  // 7: DiedBefore2000
+  // 8: Achievement
 
-      if(s===0) return { key:'Alive', display:'Nhân vật này còn sống đúng không?' };
-      if(s===1) return { key:'Gender', display:'Nhân vật này là Nam đúng không?' };
+  if(s===0) return { key:'Alive', display:'Nhân vật này còn sống đúng không?' };
+  if(s===1) return { key:'Gender', display:'Nhân vật này là Nam đúng không?' };
 
-           if (s === 2) {
-  // ====== NÂNG CẤP LĨNH VỰC: TÁCH VÀ HỎI NHIỀU LĨNH VỰC ======
-  let allFields = [];
-
-  // Tách lĩnh vực có dấu & không dấu
-  remaining.forEach(r => {
-    if (r.FieldRaw) {
-      const parts = r.FieldRaw
-        .split(/[,;]+/)
-        .map(v => v.trim())
-        .filter(v => v !== '');
-      allFields.push(...parts.map(p => ({ norm: normalize(p), raw: p })));
+  /* ========== FIELD: tách & hỏi nhiều lĩnh vực ========== */
+  if(s===2){
+    let allFields = [];
+    remaining.forEach(r => {
+      if(r.FieldRaw){
+        const parts = r.FieldRaw.split(/[,;]+/)
+          .map(v=>v.trim())
+          .filter(v=>v!=='');
+        allFields.push(...parts.map(p => ({ norm: normalize(p), raw: p })));
+      }
+    });
+    const unique = [];
+    const seen = new Set();
+    for(const f of allFields){ if(!seen.has(f.norm)){ seen.add(f.norm); unique.push(f); } }
+    if(unique.length===0) return null;
+    const notAsked = unique.filter(f => !askedTokens.has('field:'+f.norm));
+    const countAsked = Array.from(askedTokens).filter(t=>t.startsWith('field:')).length;
+    const MAX_FIELD_QUESTIONS = 3;
+    if(notAsked.length>0 && countAsked<MAX_FIELD_QUESTIONS){
+      const f = pick(notAsked);
+      return { key:'Field', token:f.norm, display:`Nhân vật này có liên quan đến lĩnh vực "${f.raw}" đúng không?` };
     }
-  });
-
-  // Loại trùng
-  const uniqueFields = [];
-  const seen = new Set();
-  for (const f of allFields) {
-    if (!seen.has(f.norm)) {
-      seen.add(f.norm);
-      uniqueFields.push(f);
-    }
-  }
-
-  if (uniqueFields.length === 0) return null;
-
-  // Các lĩnh vực chưa hỏi
-  const notAsked = uniqueFields.filter(f => !askedTokens.has('field:' + f.norm));
-
-  // Nếu chưa hỏi lĩnh vực nào, hoặc cần hỏi thêm
-  const fieldAskedCount = Array.from(askedTokens).filter(t => t.startsWith('field:')).length;
-  const MAX_FIELD_QUESTIONS = 4; // có thể hỏi tối đa 4 câu lĩnh vực
-
-  // Nếu mới chỉ có 1 lĩnh vực duy nhất trong dữ liệu
-  const uniqueFieldSet = new Set(remaining.map(r => r._norm.field));
-  const shouldAskMore = uniqueFieldSet.size === 1 && remaining.length > 1;
-
-  if ((notAsked.length > 0 && fieldAskedCount < MAX_FIELD_QUESTIONS) || shouldAskMore) {
-    const chosen = pick(notAsked.length ? notAsked : uniqueFields);
-    return {
-      key: 'Field',
-      token: chosen.norm,
-      display: `Nhân vật này có liên quan đến lĩnh vực "${chosen.raw}" đúng không?`
-    };
-  } else {
-    // Nếu đã hỏi đủ các lĩnh vực khả dụng, chuyển tầng tiếp
     step++;
     return buildQuestionForStep(step);
   }
-}
 
-      if(s===3){
-        const regs = [...new Set(remaining.map(r=> r._norm.region || inferRegionFromProvince(r._norm.province)).filter(Boolean))];
-        const pool = regs.length ? regs : ['bac','trung','nam'];
-        const poolNotAsked = pool.filter(p=>!askedTokens.has('region:'+p));
-        const chosen = poolNotAsked.length ? pick(poolNotAsked) : pick(pool);
-        const map = { bac:'Bắc', trung:'Trung', nam:'Nam' };
-        return { key:'Region', token:chosen, display:`Nhân vật này ở miền ${map[chosen] || chosen} đúng không?` };
-      }
+  /* ========== REGION: hỏi 2 câu để xác định Bắc/Trung/Nam ========== */
+  if(s===3){
+    const allRegs = ['bac','trung','nam'];
+    const notAsked = allRegs.filter(r => !askedTokens.has('region:'+r));
+    if(notAsked.length>0){
+      const next = pick(notAsked);
+      const label = next==='bac'?'Bắc':next==='trung'?'Trung':'Nam';
+      return { key:'Region', token:next, display:`Nhân vật này thuộc miền ${label} đúng không?` };
+    }
+    step++;
+    return buildQuestionForStep(step);
+  }
 
-      if(s===4){
-        const vals = [...new Set(remaining.map(r=>r._norm.period).filter(Boolean))];
-        if(vals.length===0) return null;
-        const pool = vals.filter(v=>!askedTokens.has('period:'+v));
-        const chosen = pool.length ? pick(pool) : pick(vals);
-        return { key:'Period', token:chosen, display:`Nhân vật này thuộc thời kỳ "${remaining.find(x=>x._norm.period===chosen)?.PeriodRaw || chosen}" đúng không?` };
-      }
+  /* ========== PERIOD ========== */
+  if(s===4){
+    const vals = [...new Set(remaining.map(r=>r._norm.period).filter(Boolean))];
+    if(vals.length===0) return null;
+    const pool = vals.filter(v=>!askedTokens.has('period:'+v));
+    const chosen = pool.length ? pick(pool) : pick(vals);
+    return { key:'Period', token:chosen, display:`Nhân vật này thuộc thời kỳ "${remaining.find(x=>x._norm.period===chosen)?.PeriodRaw || chosen}" đúng không?` };
+  }
 
-      if(s===5){
-        // if all remaining are tiền sử, skip event
-        const periods = [...new Set(remaining.map(r=>r._norm.period))];
-        if(periods.length===1 && periods[0] === 'tien su') return null;
-        const evs = [...new Set(remaining.map(r=>r._norm.event).filter(Boolean))];
-        if(evs.length===0) return null;
-        const pool = evs.filter(e=>!askedTokens.has('ev:'+e));
-        const chosen = pool.length ? pick(pool) : pick(evs);
-        return { key:'Event', token:chosen, display:`Nhân vật này nổi tiếng bởi sự kiện ở "${remaining.find(x=>x._norm.event===chosen)?.EventRaw || chosen}" đúng không?` };
-      }
+  /* ========== EVENT ========== */
+        if (s === 5) {
+        // ====== NÂNG CẤP TẦNG SỰ KIỆN (EVENT): TÁCH THEO DẤU ',' HOẶC ';' ======
+        const periods = [...new Set(remaining.map(r => r._norm.period))];
+        // Nếu tất cả là tiền sử, bỏ qua
+        if (periods.length === 1 && periods[0] === 'tien su') return null;
 
-      if(s===6){
-        const provs = [...new Set(remaining.map(r=>r._norm.province).filter(Boolean))];
-        if(provs.length===0) return null;
-        const pool = provs.filter(p=>!askedTokens.has('prov:'+p));
-        const chosen = pool.length ? pick(pool) : pick(provs);
-        return { key:'Province', token:chosen, display:`Nhân vật này quê quán ở ${remaining.find(x=>x._norm.province===chosen)?.ProvinceRaw || chosen} đúng không?` };
-      }
+        let allEvents = [];
 
-      if(s===7){
-        const vals = Array.from(new Set(remaining.map(r=>r._norm.died2000)));
-        const meaningful = vals.filter(v=>v!=='');
-        if(meaningful.length > 1 || (meaningful.length===1 && vals.length>1)){
-          if(!askedTokens.has('died_before_2000')) return { key:'DiedBefore2000', display:'Nhân vật này mất trước năm 2000 đúng không?' };
+        // Tách các sự kiện có dấu phẩy hoặc chấm phẩy
+        remaining.forEach(r => {
+          if (r.EventRaw) {
+            const parts = r.EventRaw
+              .split(/[,;]+/)
+              .map(v => v.trim())
+              .filter(v => v !== '');
+            allEvents.push(...parts.map(p => ({ norm: normalize(p), raw: p })));
+          }
+        });
+
+        // Loại trùng sự kiện
+        const uniqueEvents = [];
+        const seenE = new Set();
+        for (const e of allEvents) {
+          if (!seenE.has(e.norm)) {
+            seenE.add(e.norm);
+            uniqueEvents.push(e);
+          }
         }
-        return null;
-      }
 
-      if(s===8){
-        const achs = [...new Set(remaining.map(r=>r._norm.achievement).filter(Boolean))];
-        if(achs.length===0){
-          const names = remaining.map(r=>r._norm.name).filter(Boolean);
-          if(names.length) return { key:'Name', token:names[0], display:`Người này có phải là ${remaining.find(x=>x._norm.name===names[0]).Name} không?` };
-          return null;
+        if (uniqueEvents.length === 0) return null;
+
+        // Lọc những sự kiện chưa hỏi
+        const notAskedE = uniqueEvents.filter(e => !askedTokens.has('ev:' + e.norm));
+
+        // Kiểm soát số lượng câu hỏi tối đa ở tầng sự kiện
+        const eventAskedCount = Array.from(askedTokens).filter(t => t.startsWith('ev:')).length;
+        const MAX_EVENT_QUESTIONS = 4;
+
+        const shouldAskMoreEvents = remaining.length > 1 && notAskedE.length > 0;
+
+        if ((notAskedE.length > 0 && eventAskedCount < MAX_EVENT_QUESTIONS) || shouldAskMoreEvents) {
+          const chosenE = pick(notAskedE.length ? notAskedE : uniqueEvents);
+          return {
+            key: 'Event',
+            token: chosenE.norm,
+            display: `Nhân vật này có liên quan đến sự kiện "${chosenE.raw}" đúng không?`
+          };
+        } else {
+          // Nếu hỏi hết sự kiện rồi thì qua tầng sau
+          step++;
+          return buildQuestionForStep(step);
         }
-        const pool = achs.filter(a=>!askedTokens.has('ach:'+a));
-        const chosen = pool.length ? pick(pool) : pick(achs);
-        return { key:'Achievement', token:chosen, display:`Nhân vật này có phải là người đã "${remaining.find(x=>x._norm.achievement===chosen)?.AchievementRaw || chosen}" không?` };
       }
 
+
+  /* ========== PROVINCE ========== */
+  if(s===6){
+    const provs = [...new Set(remaining.map(r=>r._norm.province).filter(Boolean))];
+    if(provs.length===0) return null;
+    const pool = provs.filter(p=>!askedTokens.has('prov:'+p));
+    const chosen = pool.length ? pick(pool) : pick(provs);
+    return { key:'Province', token:chosen, display:`Nhân vật này quê quán ở ${remaining.find(x=>x._norm.province===chosen)?.ProvinceRaw || chosen} đúng không?` };
+  }
+
+  /* ========== DIED BEFORE 2000 ========== */
+  if(s===7){
+    const vals = Array.from(new Set(remaining.map(r=>r._norm.died2000)));
+    const meaningful = vals.filter(v=>v!=='');
+    if(meaningful.length>1 || (meaningful.length===1 && vals.length>1)){
+      if(!askedTokens.has('died_before_2000')) return { key:'DiedBefore2000', display:'Nhân vật này mất trước năm 2000 đúng không?' };
+    }
+    return null;
+  }
+
+  /* ========== ACHIEVEMENT (Final) ========== */
+  if(s===8){
+    const achs = [...new Set(remaining.map(r=>r._norm.achievement).filter(Boolean))];
+    if(achs.length===0){
+      const names = remaining.map(r=>r._norm.name).filter(Boolean);
+      if(names.length) return { key:'Name', token:names[0], display:`Người này có phải là ${remaining.find(x=>x._norm.name===names[0]).Name} không?` };
       return null;
     }
+    const pool = achs.filter(a=>!askedTokens.has('ach:'+a));
+    const chosen = pool.length ? pick(pool) : pick(achs);
+    return { key:'Achievement', token:chosen, display:`Nhân vật này có phải là người đã "${remaining.find(x=>x._norm.achievement===chosen)?.AchievementRaw || chosen}" không?` };
+  }
+
+  return null;
+}
+
 
     /* ================== Apply filter safely: avoid removing all candidates accidentally ========== */
     function applyFilterSafely(tokenLabel, filtered){
@@ -750,7 +778,6 @@ However, it is not an official product of Akinator or the company Elokence.
   </script>
 </body>
 </html>
-
 
 
 
