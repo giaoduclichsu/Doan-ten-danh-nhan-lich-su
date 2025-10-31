@@ -397,7 +397,7 @@ However, it is not an official product of Akinator or the company Elokence.
   // 8: Achievement
 
   if(s===0) return { key:'Alive', display:'Nhân vật này còn sống đúng không?' };
-  if(s===1) return { key:'Gender', display:'Nhân vật này là Nam đúng không?' };
+  if(s===1) return { key:'Gender', display:'Nhân vật này là nam đúng không?' };
 
   /* ========== FIELD: tách & hỏi nhiều lĩnh vực ========== */
   if(s===2){
@@ -432,7 +432,7 @@ However, it is not an official product of Akinator or the company Elokence.
     if(notAsked.length>0){
       const next = pick(notAsked);
       const label = next==='bac'?'Bắc':next==='trung'?'Trung':'Nam';
-      return { key:'Region', token:next, display:`Nhân vật này thuộc miền ${label} đúng không?` };
+      return { key:'Region', token:next, display:`Nhân vật này sinh ra ở miền ${label} đúng không?` };
     }
     step++;
     return buildQuestionForStep(step);
@@ -778,6 +778,7 @@ However, it is not an official product of Akinator or the company Elokence.
   </script>
 </body>
 </html>
+
 
 
 
